@@ -1,35 +1,36 @@
 package com.ecommerce.project.controller;
 
-import com.ecommerce.project.model.Category;
+import com.ecommerce.project.entity.Category;
 import com.ecommerce.project.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
 
     private CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
     @GetMapping("/public/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
+    @GetMapping("/public/categories/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        return new ResponseEntity<>(category, HttpStatus.OK);
+    }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> addCategory(@RequestBody Category category) {
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category successfully added", HttpStatus.CREATED);
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+       Category newCategory = categoryService.createCategory(category);
+        return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/admin/categories/{id}")
